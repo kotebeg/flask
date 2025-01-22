@@ -10,7 +10,7 @@ stores = [{"name": "My Store", "items": [{"name": "my item", "price": 15.99}]}]
 def get_stores():
     return {"stores": stores}
 
-
+# simple POST example
 @app.post("/store")
 def create_store():
     request_data = request.get_json()  #retrieve the JSON content of our request.
@@ -20,6 +20,16 @@ def create_store():
     return new_store, 201   # it also returns json data, new store unit
 
 
+#  POST data to dynamic URL
+@app.post("/store/<string:name>/item")
+def create_item(name):
+    request_data = request.get_json()
+    for store in stores:
+        if store["name"] == name:
+            new_item = {"name": request_data["name"], "price": request_data["price"]}
+            store["items"].append(new_item)
+            return new_item
+    return {"message": "Store not found"}, 404
 
 
 
